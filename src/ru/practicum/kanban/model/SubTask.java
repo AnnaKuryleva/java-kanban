@@ -1,5 +1,9 @@
+package ru.practicum.kanban.model;
+
+import ru.practicum.kanban.service.TaskStatus;
+
 public class SubTask extends Task {
-    private int epicId;
+    private final int epicId;
 
     public SubTask(String name, String description, int id, TaskStatus taskStatus, int epicId) {
         super(name, description, id, taskStatus);
@@ -12,7 +16,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask {" +
+        return " SubTask {" +
                 "epicId= " + epicId +
                 ", " + super.toString() +
                 '}';

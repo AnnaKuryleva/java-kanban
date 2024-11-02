@@ -1,3 +1,7 @@
+package ru.practicum.kanban.model;
+
+import ru.practicum.kanban.service.TaskStatus;
+
 public class Task {
     private String name;
     private String description;
@@ -43,15 +47,10 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-    public enum TaskStatus {
-        NEW,
-        IN_PROGRESS,
-        DONE
-    }
 
     @Override
     public String toString() {
-        return "Task {" +
+        return " Task {" +
                 "name= '" + name + '\'' +
                 ", description= '" + description + '\'' +
                 ", id= " + id +

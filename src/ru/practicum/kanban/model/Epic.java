@@ -1,22 +1,31 @@
+package ru.practicum.kanban.model;
+
+import ru.practicum.kanban.service.TaskStatus;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Epic extends Task {
 
-    private Map<Integer, SubTask> subTasks;
+    private final Map<Integer, SubTask> subTasks;
 
-    public Epic(String name, String description, int id, TaskStatus taskStatus) {
-        super(name, description, id, taskStatus);
+    public Epic(String name, String description, int id) {
+        super(name, description, id, TaskStatus.NEW);
         this.subTasks = new HashMap<>();
     }
 
     public Map<Integer, SubTask> getSubTasks() {
-        return subTasks;
+        return new HashMap<>(subTasks);
     }
 
-    public void updateEpicStatus() {
+    @Override
+    public final void setTaskStatus(TaskStatus taskStatus) {
+
+    }
+
+    private void updateEpicStatus() {
         if (getSubTasks().isEmpty()) {
-            setTaskStatus(TaskStatus.NEW);
+            super.setTaskStatus(TaskStatus.NEW);
             return;
         }
         boolean allTasksClosed = true;
@@ -28,23 +37,30 @@ public class Epic extends Task {
         }
 
         if (allTasksClosed) {
-            setTaskStatus(TaskStatus.DONE);
+            super.setTaskStatus(TaskStatus.DONE);
         } else {
-            setTaskStatus(TaskStatus.IN_PROGRESS);
+            super.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
     }
 
     public void addSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
+        updateEpicStatus();
     }
 
-    public void removeSubTask() {
+    public void removeSubTask(SubTask subTask) {
+        subTasks.remove(subTask.getId(), subTask);
+        updateEpicStatus();
+    }
+
+    public void removeSubTasks() {
         subTasks.clear();
+        updateEpicStatus();
     }
 
     @Override
     public String toString() {
-        return "Epic {" +
+        return " Epic {" +
                 "subTasks=" + subTasks +
                 ", " + super.toString() +
                 '}';
