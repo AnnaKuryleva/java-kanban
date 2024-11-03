@@ -113,14 +113,12 @@ public class TaskManager {
             newSubTask.setId(idGenerator());
             relatedEpic.addSubTask(newSubTask);
             subTasks.put(newSubTask.getId(), newSubTask);
-            idGenerator();
         }
     }
 
     public void createEpic(Epic newEpic) {
         newEpic.setId(idGenerator());
         epics.put(newEpic.getId(), newEpic);
-        idGenerator();
     }
 
     public void updateTask(Task updateTask) {
