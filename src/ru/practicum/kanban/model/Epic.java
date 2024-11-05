@@ -1,7 +1,5 @@
 package ru.practicum.kanban.model;
 
-import ru.practicum.kanban.service.TaskStatus;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,24 +18,27 @@ public class Epic extends Task {
 
     @Override
     public final void setTaskStatus(TaskStatus taskStatus) {
-
     }
 
     private void updateEpicStatus() {
         if (getSubTasks().isEmpty()) {
-            super.setTaskStatus(TaskStatus.NEW);
+            setTaskStatus(TaskStatus.NEW);
             return;
         }
-        boolean allTasksClosed = true;
+        boolean allTasksNew = true;
+        boolean allTasksDone = true;
         for (SubTask subTask : getSubTasks().values()) {
             if (subTask.getTaskStatus() != TaskStatus.DONE) {
-                allTasksClosed = false;
-                break;
+                allTasksDone = false;
+            }
+            if (subTask.getTaskStatus() != TaskStatus.NEW) {
+                allTasksNew = false;
             }
         }
-
-        if (allTasksClosed) {
+        if (allTasksDone) {
             super.setTaskStatus(TaskStatus.DONE);
+        } else if (allTasksNew) {
+            super.setTaskStatus(TaskStatus.NEW);
         } else {
             super.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
@@ -48,8 +49,8 @@ public class Epic extends Task {
         updateEpicStatus();
     }
 
-    public void removeSubTask(SubTask subTask) {
-        subTasks.remove(subTask.getId(), subTask);
+    public void removeSubTask(int subTaskId) {
+        subTasks.remove(subTaskId);
         updateEpicStatus();
     }
 

@@ -1,4 +1,4 @@
-package ru.practicum.kanban.service;
+package ru.practicum.kanban.model;
 
 public enum TaskStatus {
     NEW,

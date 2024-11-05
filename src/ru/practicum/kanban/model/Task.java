@@ -1,7 +1,5 @@
 package ru.practicum.kanban.model;
 
-import ru.practicum.kanban.service.TaskStatus;
-
 public class Task {
     private String name;
     private String description;
@@ -44,9 +42,9 @@ public class Task {
     }
 
     public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+        this.taskStatus = taskStatus
+        ;
     }
-
 
     @Override
     public String toString() {

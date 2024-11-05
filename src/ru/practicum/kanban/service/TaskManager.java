@@ -14,7 +14,7 @@ public class TaskManager {
     private int idCounter = 1;
 
     public int idGenerator() {
-       return idCounter++;
+        return idCounter++;
     }
 
     public List<Task> getAllTasks() {
@@ -47,28 +47,25 @@ public class TaskManager {
 
     public void deleteTaskById(int id) {
         Task task = tasks.get(id);
-        if (task != null) {
-            tasks.remove(id);
-        }
+        tasks.remove(id);
     }
 
     public void deleteSubTaskById(int id) {
-        SubTask subTask = subTasks.get(id);
+        SubTask subTask = subTasks.remove(id);
         if (subTask != null) {
-            subTasks.remove(id);
             Epic epic = epics.get(subTask.getEpicId());
             if (epic != null) {
-                epic.removeSubTask(subTask);
+                epic.removeSubTask(id);
             }
         }
     }
 
     public void deleteEpicById(int id) {
-        List<SubTask> listSubTasksByDelete = new ArrayList<>();
         Epic epic = epics.get(id);
         if (epic != null) {
-            int epicId = epic.getId();
-            subTasks.values().removeIf(subTask -> subTask.getEpicId() == epicId);
+            for (Integer keySubTask : epic.getSubTasks().keySet()) {
+                subTasks.remove(keySubTask);
+            }
             epic.removeSubTasks();
             epics.remove(id);
         }
@@ -78,9 +75,9 @@ public class TaskManager {
         List<SubTask> listSubTasks = new ArrayList<>();
         final Epic epic = epics.get(id);
         if (epic != null) {
-            int epicId = epic.getId();
-            for (SubTask subTask : subTasks.values()) {
-                if (subTask.getEpicId() == epicId) {
+            Map<Integer, SubTask> subTaskMap = epic.getSubTasks();
+            for (SubTask subTask : subTaskMap.values()) {
+                if (subTask != null) {
                     listSubTasks.add(subTask);
                 }
             }
@@ -139,10 +136,8 @@ public class TaskManager {
         Epic relatedEpic = epics.get(epicId);
         if (relatedEpic != null && subTask.getEpicId() == epicId) {
             relatedEpic.addSubTask(myUpdateSubTask);
-        } else {
-            return;
+            subTasks.put(myUpdateSubTask.getId(), myUpdateSubTask);
         }
-        subTasks.put(myUpdateSubTask.getId(), myUpdateSubTask);
     }
 
     public void updateEpic(Epic updateEpic) {
