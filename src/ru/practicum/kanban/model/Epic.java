@@ -12,8 +12,6 @@ public class Epic extends Task {
         this.subTasks = new HashMap<>();
     }
 
-
-
     public Map<Integer, SubTask> getSubTasks() {
         return new HashMap<>(subTasks);
     }
@@ -64,7 +62,7 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return " Epic {" +
-                "subTasks=" + subTasks +
+                // "subTasks=" + subTasks +
                 ", " + super.toString() +
                 '}';
     }

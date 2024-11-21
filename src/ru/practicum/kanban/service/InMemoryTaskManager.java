@@ -10,9 +10,13 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
-    private final List<Task> historyList = new ArrayList<>();
+    private final HistoryManager historyManager;
 
     private int idCounter = 1;
+
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
 
     public int idGenerator() {
         return idCounter++;
@@ -98,9 +102,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-       Task task = tasks.get(id);
-       addTaskToHistoryList(task);
-       return task;
+        Task task = tasks.get(id);
+        addTaskToHistoryList(task);
+        return task;
     }
 
     @Override
@@ -128,11 +132,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubTask(SubTask newSubTask) {
         int epicId = newSubTask.getEpicId();
         if (epicId == newSubTask.getId()) {
-           return;
+            return;
         }
         Epic relatedEpic = epics.get(epicId);
         if (relatedEpic != null) {
-            newSubTask.setId(idGenerator());
             relatedEpic.addSubTask(newSubTask);
             subTasks.put(newSubTask.getId(), newSubTask);
         }
@@ -140,7 +143,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic newEpic) {
-        newEpic.setId(idGenerator());
         epics.put(newEpic.getId(), newEpic);
     }
 
@@ -177,18 +179,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void addTaskToHistoryList(Task task) {
-        if (task == null) {
-            return;
-        }
-        if (historyList.size() > 10) {
-            historyList.removeFirst();
-        }
-        historyList.add(task);
+    public void addTaskToHistoryList(Task task) {
+        historyManager.add(task);
     }
 
     @Override
-    public List<Task> getHistory() { // сделать метод
-        return new ArrayList<>(historyList);
+    public List<Task> getHistory() {
+        return new LinkedList<>(historyManager.getHistory());
     }
 }

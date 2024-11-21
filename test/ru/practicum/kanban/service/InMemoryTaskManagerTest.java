@@ -1,5 +1,6 @@
 package ru.practicum.kanban.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.kanban.model.Epic;
 import ru.practicum.kanban.model.SubTask;
@@ -10,10 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class InMemoryTaskManagerTest {
+    private TaskManager taskManager;
+
+    @BeforeEach
+    void setForEachMethod() {
+        taskManager = Managers.getDefault();
+    }
 
     @Test
-    void InMemoryTaskManagerAddsTasksOfTaskTypeAndCanFindThemById() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+    void addsTasksOfTaskTypeAndCanFindThemById() {
         Task taskTestOne = new Task("TaskTestOne", "DescriptionForTaskTestOne",
                 taskManager.idGenerator(), TaskStatus.NEW);
         taskManager.createTask(taskTestOne);
@@ -21,8 +27,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void InMemoryTaskManagerAddsTasksOfEpicTypeAndCanFindThemById() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+    void addsTasksOfEpicTypeAndCanFindThemById() {
         Epic epicTestOne = new Epic("EpicTestOne", "ОПИСАНИЕ-ДЛЯ-ПЕРВОГО ЭПИКА",
                 taskManager.idGenerator());
         taskManager.createEpic(epicTestOne);
@@ -30,8 +35,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void InMemoryTaskManagerAddsTasksOfSabTaskTypeAndCanFindThemById() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+    void addsTasksOfSabTaskTypeAndCanFindThemById() {
         Epic epicTestOne = new Epic("EpicTestOne", "ОПИСАНИЕ-ДЛЯ-ПЕРВОГО ЭПИКА",
                 taskManager.idGenerator());
         taskManager.createEpic(epicTestOne);
@@ -44,7 +48,6 @@ public class InMemoryTaskManagerTest {
 
     @Test
     void tasksWithGivenIdAndGeneratedIdDoNotConflictWithinManager() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Task taskTestOne = new Task("TaskTestOne", "DescriptionForTaskTestOne",
                 1, TaskStatus.NEW);
         taskManager.createTask(taskTestOne);
@@ -57,15 +60,14 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void FieldsOfTaskDoNotChangeWhenAddedToManager() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+    void fieldsOfTaskDoNotChangeWhenAddedToManager() {
         Task taskTestOne = new Task("TaskTestOne", "DescriptionForTaskTestOne",
                 1, TaskStatus.NEW);
         taskManager.createTask(taskTestOne);
         Task taskEquals = taskManager.getTaskById(taskTestOne.getId());
-        assertEquals(taskTestOne.getName(),taskEquals.getName());
-        assertEquals(taskTestOne.getDescription(),taskEquals.getDescription());
-        assertEquals(taskTestOne.getId(),taskEquals.getId());
-        assertEquals(taskTestOne.getTaskStatus(),taskEquals.getTaskStatus());
+        assertEquals(taskTestOne.getName(), taskEquals.getName());
+        assertEquals(taskTestOne.getDescription(), taskEquals.getDescription());
+        assertEquals(taskTestOne.getId(), taskEquals.getId());
+        assertEquals(taskTestOne.getTaskStatus(), taskEquals.getTaskStatus());
     }
 }
