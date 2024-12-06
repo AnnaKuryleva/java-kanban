@@ -46,10 +46,14 @@ public class Main {
         System.out.println("SubTasks: " + taskManager.getAllSubTasks());
         System.out.println(epicTestOne.getTaskStatus() + " -  4");
         // taskManager.deleteEpicById(3);
+        System.out.println("Task:" + taskManager.getAllTasks());
         System.out.println("SubTasks: " + taskManager.getAllSubTasks());
         System.out.println("Epics: " + taskManager.getAllEpics());
-        System.out.println("Последние полученные задачи: " + taskManager.getHistory());
+        System.out.println("Последние полученные задачи: " + taskManager.getHistoryTasks());
         printAllTasks(taskManager);
+
+
+
     }
 
     private static void printAllTasks(TaskManager manager) {
@@ -71,7 +75,7 @@ public class Main {
         }
 
         System.out.println("История:");
-        for (Task task : manager.getHistory()) {
+        for (Task task : manager.getHistoryTasks()) {
             System.out.println(task);
         }
     }
