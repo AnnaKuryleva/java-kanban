@@ -103,7 +103,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
-        addTaskToHistoryList(task);
+        if (task != null) {
+            addTaskToHistoryList(task);
+        }
         return task;
     }
 
@@ -179,12 +181,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void addTaskToHistoryList(Task task) {
-        historyManager.add(task);
+    @Override
+    public List<Task> getHistoryTasks() {
+        return new ArrayList<>(historyManager.getHistoryTasks());
     }
 
-    @Override
-    public List<Task> getHistory() {
-        return new LinkedList<>(historyManager.getHistory());
+    public void addTaskToHistoryList(Task task) {
+        historyManager.add(task);
     }
 }

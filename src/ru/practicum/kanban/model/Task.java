@@ -42,8 +42,7 @@ public class Task {
     }
 
     public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus
-        ;
+        this.taskStatus = taskStatus;
     }
 
     @Override
