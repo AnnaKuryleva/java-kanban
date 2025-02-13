@@ -2,7 +2,6 @@ package ru.practicum.kanban.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Epic extends Task {
 
@@ -62,7 +61,9 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        Set<Integer> subTaskIds = subTasks.keySet();
-        return STR." Epic [ \{super.toString()}\{subTaskIds}\{']'}";
+        return " Epic {" +
+                // "subTasks=" + subTasks +
+                ", " + super.toString() +
+                '}';
     }
 }

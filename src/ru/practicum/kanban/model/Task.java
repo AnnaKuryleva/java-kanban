@@ -42,17 +42,18 @@ public class Task {
     }
 
     public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+        this.taskStatus = taskStatus
+        ;
     }
 
     @Override
     public String toString() {
-        return STR." Task [" +
+        return " Task {" +
                 "name= '" + name + '\'' +
                 ", description= '" + description + '\'' +
                 ", id= " + id +
                 ", taskStatus= " + taskStatus +
-                ']';
+                '}';
     }
 
     @Override
