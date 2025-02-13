@@ -6,8 +6,8 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> historyMap = new HashMap<>();
-    Node<Task> head;
-    Node<Task> tail;
+    private Node<Task> head;
+    private Node<Task> tail;
 
     @Override
     public void add(Task task) {
@@ -18,6 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> newNode = new Node<>(task);
         if (tail != null) {
             tail.next = newNode;
+            newNode.prev = tail;
         } else {
             head = newNode;
         }
@@ -44,13 +45,17 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tail = prevNode;
         }
+        node.prev = null;
+        node.next = null;
     }
 
     @Override
-    public List<Task> getHistoryTasks() {
+    public List<Task> getHistory() {
         List<Task> historyTasks = new ArrayList<>();
-        for (Node<Task> node : historyMap.values()) {
+        Node<Task> node = head;
+        while (node != null) {
             historyTasks.add(node.task);
+            node = node.next;
         }
         return historyTasks;
     }

@@ -46,7 +46,8 @@ public interface TaskManager {
 
     void updateEpic(Epic updateEpic);
 
-    List<Task> getHistoryTasks();
+    List<Task> getHistory();
 
     int idGenerator();
+
 }

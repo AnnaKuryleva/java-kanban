@@ -27,7 +27,7 @@ public class HistoryManagerTest {
                 1, TaskStatus.NEW);
         taskManager.createTask(task1);
         historyManager.add(task1);
-        List<Task> history = historyManager.getHistoryTasks();
+        List<Task> history = historyManager.getHistory();
         assertEquals(task1.getName(), history.get(0).getName());
         assertEquals(task1.getDescription(), history.get(0).getDescription());
         assertEquals(task1.getId(), history.get(0).getId());
@@ -44,7 +44,7 @@ public class HistoryManagerTest {
         taskManager.createTask(taskTwo);
         Task receiveTaskOne = taskManager.getTaskById(1);
         Task receiveTaskTwo = taskManager.getTaskById(2);
-        List<Task> history = historyManager.getHistoryTasks();
+        List<Task> history = historyManager.getHistory();
         assertEquals(receiveTaskOne, history.get(0));
         assertEquals(receiveTaskTwo, history.get(1));
     }
@@ -60,11 +60,13 @@ public class HistoryManagerTest {
         taskManager.createSubTask(subTaskTestOne);
         taskManager.getEpicById(epicTestOne.getId());
         taskManager.getSubTaskById(subTaskTestOne.getId());
-        List<Task> history = historyManager.getHistoryTasks();
+        List<Task> history = historyManager.getHistory();
         assertEquals(List.of(epicTestOne, subTaskTestOne), history);
         historyManager.remove(subTaskTestOne.getId());
         historyManager.remove(epicTestOne.getId());
-        List<Task> historyNew = historyManager.getHistoryTasks();
+        List<Task> historyNew = historyManager.getHistory();
         assertEquals(List.of(), historyNew);
     }
+
+
 }

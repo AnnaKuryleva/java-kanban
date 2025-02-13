@@ -47,12 +47,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return " Task {" +
+        return STR." Task [" +
                 "name= '" + name + '\'' +
                 ", description= '" + description + '\'' +
                 ", id= " + id +
                 ", taskStatus= " + taskStatus +
-                '}';
+                ']';
     }
 
     @Override

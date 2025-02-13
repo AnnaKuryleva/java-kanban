@@ -1,6 +1,5 @@
 package ru.practicum.kanban.service;
 
-
 import ru.practicum.kanban.model.Task;
 
 import java.util.List;
@@ -11,5 +10,5 @@ public interface HistoryManager {
 
     void remove(int id);
 
-    List<Task> getHistoryTasks();
+    List<Task> getHistory();
 }
