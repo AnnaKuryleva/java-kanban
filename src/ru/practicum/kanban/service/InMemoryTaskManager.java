@@ -39,11 +39,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        for (Task task : tasks.values()) {
+            historyManager.remove(task.getId());
+        }
         tasks.clear();
+
     }
 
     @Override
     public void deleteAllSubTasks() {
+        for (SubTask subTask : subTasks.values()) {
+            historyManager.remove(subTask.getId());
+        }
         subTasks.clear();
         for (Epic relatedEpic : epics.values()) {
             relatedEpic.removeSubTasks();
@@ -52,14 +59,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
+        for (Epic epic : epics.values()) {
+            historyManager.remove(epic.getId());
+        }
         epics.clear();
         deleteAllSubTasks();
     }
 
     @Override
     public void deleteTaskById(int id) {
-        tasks.get(id);
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -70,6 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
             if (epic != null) {
                 epic.removeSubTask(id);
             }
+            historyManager.remove(id);
         }
     }
 
@@ -82,6 +93,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
             epic.removeSubTasks();
             epics.remove(id);
+            historyManager.remove(id);
         }
     }
 
@@ -103,7 +115,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
-        addTaskToHistoryList(task);
+        if (task != null) {
+            addTaskToHistoryList(task);
+        }
         return task;
     }
 
@@ -179,12 +193,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public void addTaskToHistoryList(Task task) {
-        historyManager.add(task);
-    }
-
     @Override
     public List<Task> getHistory() {
-        return new LinkedList<>(historyManager.getHistory());
+        return new ArrayList<>(historyManager.getHistory());
+    }
+
+    public void addTaskToHistoryList(Task task) {
+        historyManager.add(task);
     }
 }

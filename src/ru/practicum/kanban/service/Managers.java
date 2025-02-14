@@ -1,6 +1,7 @@
 package ru.practicum.kanban.service;
 
-public class Managers {
+public final class Managers {
+
     private Managers() {
     }
 

@@ -49,4 +49,5 @@ public interface TaskManager {
     List<Task> getHistory();
 
     int idGenerator();
+
 }
