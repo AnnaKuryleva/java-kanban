@@ -1,0 +1,6 @@
+id,type,name,status,description,epic
+1,TASK,TaskTestOne,NEW,DescriptionForTaskTestOne,-1
+2,TASK,TaskTestTwo,NEW,DescriptionForTaskTestTwo,-1
+3,EPIC,EpicTestOne,DONE,ОПИСАНИЕ-ДЛЯ-ПЕРВОГО ЭПИКА,-1
+4,SUBTASK,SubTaskTestFoo - обновление SubTaskTestOne,DONE,ОПИСАНИЕ - ОБНОВЛЕНИЕ ДЛЯ ПЕРВОГО сабТаска,3
+5,SUBTASK,SubTaskTestTwo,DONE,ОПИСАНИЕ ВТОРОГО сабТаска - ДЛЯ ПЕРВОГО ЭПИКА,3
