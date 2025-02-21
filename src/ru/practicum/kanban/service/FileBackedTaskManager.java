@@ -119,17 +119,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = restoreTask[2];
         TaskStatus taskStatus = TaskStatus.valueOf(restoreTask[3]);
         String description = restoreTask[4];
-        int EpicId = taskType == TaskType.SUBTASK ? Integer.parseInt(restoreTask[5]) : -1;
+        int epicId = taskType == TaskType.SUBTASK ? Integer.parseInt(restoreTask[5]) : -1;
         switch (taskType) {
             case TASK:
                 Task task = new Task(name, description, id, taskStatus);
                 return task;
             case EPIC:
                 Epic epic = new Epic(name, description, id);
-                epic.getSubTasks().get(EpicId);
+                epic.getSubTasks().get(epicId);
                 return epic;
             case SUBTASK:
-                SubTask subTask = new SubTask(name, description, id, taskStatus, EpicId);
+                SubTask subTask = new SubTask(name, description, id, taskStatus, epicId);
                 return subTask;
             default:
                 return null;
