@@ -2,6 +2,8 @@ package ru.practicum.kanban.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.practicum.kanban.model.Epic;
+import ru.practicum.kanban.model.SubTask;
 import ru.practicum.kanban.model.Task;
 import ru.practicum.kanban.model.TaskStatus;
 
@@ -15,8 +17,8 @@ public class HistoryManagerTest {
 
     @BeforeEach
     void setForEachMethod() {
-        taskManager = Managers.getDefault();
         historyManager = Managers.getDefaultHistory();
+        taskManager = new InMemoryTaskManager(historyManager);
     }
 
     @Test
@@ -33,17 +35,6 @@ public class HistoryManagerTest {
     }
 
     @Test
-    void maximumSizeOfListOfStoriesIsLastTenTasks() {
-        for (int i = 0; i <= 12; i++) {
-            Task task = new Task("Task_" + (i + 1), "DescriptionForTask_" + (i + 1),
-                    i, TaskStatus.NEW);
-            taskManager.createTask(task);
-            historyManager.add(task);
-        }
-        assertEquals(10, historyManager.getHistory().size());
-    }
-
-    @Test
     void tasksReceivedByIdAreIncludedInHistory() {
         Task taskOne = new Task("TaskTestOne", "DescriptionForTaskTestOne",
                 1, TaskStatus.NEW);
@@ -53,8 +44,29 @@ public class HistoryManagerTest {
         taskManager.createTask(taskTwo);
         Task receiveTaskOne = taskManager.getTaskById(1);
         Task receiveTaskTwo = taskManager.getTaskById(2);
-        List<Task> history = taskManager.getHistory();
+        List<Task> history = historyManager.getHistory();
         assertEquals(receiveTaskOne, history.get(0));
         assertEquals(receiveTaskTwo, history.get(1));
     }
+
+    @Test
+    void subtaskIdDeletedFromHistoryMapWhenThisSubtaskDeleted() {
+        Epic epicTestOne = new Epic("EpicTestOne", "ОПИСАНИЕ-ДЛЯ-ПЕРВОГО ЭПИКА",
+                taskManager.idGenerator());
+        taskManager.createEpic(epicTestOne);
+        SubTask subTaskTestOne = new SubTask("SubTaskTestOne",
+                "ОПИСАНИЕ ПЕРВОГО сабТаска - ДЛЯ ПЕРВОГО ЭПИКА", taskManager.idGenerator(),
+                TaskStatus.IN_PROGRESS, epicTestOne.getId());
+        taskManager.createSubTask(subTaskTestOne);
+        taskManager.getEpicById(epicTestOne.getId());
+        taskManager.getSubTaskById(subTaskTestOne.getId());
+        List<Task> history = historyManager.getHistory();
+        assertEquals(List.of(epicTestOne, subTaskTestOne), history);
+        historyManager.remove(subTaskTestOne.getId());
+        historyManager.remove(epicTestOne.getId());
+        List<Task> historyNew = historyManager.getHistory();
+        assertEquals(List.of(), historyNew);
+    }
+
+
 }

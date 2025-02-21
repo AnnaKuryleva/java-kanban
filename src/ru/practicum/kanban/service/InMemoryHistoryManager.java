@@ -2,10 +2,7 @@ package ru.practicum.kanban.service;
 
 import ru.practicum.kanban.model.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Node> historyMap = new HashMap<>();
@@ -21,6 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> newNode = new Node<>(task);
         if (tail != null) {
             tail.next = newNode;
+            newNode.prev = tail;
         } else {
             head = newNode;
         }
@@ -47,15 +45,18 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tail = prevNode;
         }
+        node.prev = null;
+        node.next = null;
     }
 
     @Override
     public List<Task> getHistory() {
         List<Task> historyTasks = new ArrayList<>();
-        for (Node<Task> node : historyMap.values()) {
+        Node<Task> node = head;
+        while (node != null) {
             historyTasks.add(node.task);
+            node = node.next;
         }
-        System.out.println();
         return historyTasks;
     }
 
