@@ -54,7 +54,7 @@ public class Main {
 
         System.out.println("ТЕСТИРОВАНИЕ CSV");
 
-        File file = new File("src/ru/practicum/kanban/service/tasks.csv");
+        File file = new File("resources/tasks.csv");
         System.out.println();
 
         FileBackedTaskManager manager = new FileBackedTaskManager(historyManager, file);

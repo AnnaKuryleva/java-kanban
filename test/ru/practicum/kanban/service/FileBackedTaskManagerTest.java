@@ -2,6 +2,7 @@ package ru.practicum.kanban.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.practicum.kanban.exceptions.ManagerSaveException;
 import ru.practicum.kanban.model.Task;
 import ru.practicum.kanban.model.TaskStatus;
 
@@ -24,22 +25,10 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void saveAnEmptyFile() {
-        ManagerSaveException exception = assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager.save());
-        assertEquals("File is empty", exception.getMessage());
-    }
-
-    @Test
     void writeTasksToFileThatIsNotWritable() {
         file.setWritable(false);
         ManagerSaveException exception = assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager.save());
         assertEquals("Error working with the file", exception.getMessage());
-    }
-
-    @Test
-    void loadTasksFromAnEmptyFile() {
-        ManagerSaveException exception = assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager.loadFromFile(file));
-        assertEquals("File is empty", exception.getMessage());
     }
 
     @Test
@@ -49,8 +38,8 @@ public class FileBackedTaskManagerTest {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         List<Task> loadedTasks = loadedManager.getAllTasks();
         assertEquals(2, loadedTasks.size());
-        assertEquals(taskOne,loadedTasks.get(0));
-        assertEquals(taskTwo,loadedTasks.get(1));
+        assertEquals(taskOne, loadedTasks.get(0));
+        assertEquals(taskTwo, loadedTasks.get(1));
     }
 
 }

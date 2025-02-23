@@ -1,5 +1,7 @@
 package ru.practicum.kanban.model;
 
+import ru.practicum.kanban.service.TaskType;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +60,11 @@ public class Epic extends Task {
     public void removeSubTasks() {
         subTasks.clear();
         updateEpicStatus();
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package ru.practicum.kanban.model;
 
+import ru.practicum.kanban.service.TaskType;
+
 public class SubTask extends Task {
     private final int epicId;
 
@@ -10,6 +12,11 @@ public class SubTask extends Task {
 
     public int getEpicId() {
         return epicId;
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
     }
 
     @Override

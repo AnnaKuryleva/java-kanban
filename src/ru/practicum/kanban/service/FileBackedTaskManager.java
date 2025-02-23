@@ -1,5 +1,6 @@
 package ru.practicum.kanban.service;
 
+import ru.practicum.kanban.exceptions.ManagerSaveException;
 import ru.practicum.kanban.model.Epic;
 import ru.practicum.kanban.model.SubTask;
 import ru.practicum.kanban.model.Task;
@@ -26,7 +27,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static int findEpicIdForSubtask(Task task) {
-        if (task instanceof SubTask) {
+        if (task.getType() == TaskType.SUBTASK) {
             return ((SubTask) task).getEpicId();
         }
         return -1;
@@ -45,27 +46,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try {
-            if (!Files.exists(file.toPath())) {
-                Files.createFile(file.toPath());
-            }
-            boolean isEmpty = true;
             try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
                 writer.write("id,type,name,status,description,epic\n");
                 for (Task task : getAllTasks()) {
                     writer.write(toString(task) + "\n");
-                    isEmpty = false;
                 }
                 for (Epic epic : getAllEpics()) {
                     writer.write(toString(epic) + "\n");
-                    isEmpty = false;
                 }
                 for (SubTask subTask : getAllSubTasks()) {
                     writer.write(toString(subTask) + "\n");
-                    isEmpty = false;
                 }
-            }
-            if (isEmpty) {
-                throw new ManagerSaveException("File is empty");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Error working with the file");
@@ -73,20 +64,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
-        if (file == null) {
-            throw new ManagerSaveException("File is null");
-        }
-        if (!file.isFile()) {
-            if (file.isDirectory()) {
-                throw new ManagerSaveException("Directory is located at the specified path");
-            } else {
-                throw new ManagerSaveException("Path is specified incorrectly");
+        if (!Files.exists(file.toPath())) {
+            try {
+                Files.createFile(file.toPath());
+            } catch (Exception exp) {
+                System.out.println("Failed to create a file");
             }
         }
-        if (file.length() == 0) {
-            throw new ManagerSaveException("File is empty");
-        }
-
         FileBackedTaskManager manager = new FileBackedTaskManager(new InMemoryHistoryManager(), file);
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             String line;
@@ -97,15 +81,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     continue;
                 }
                 Task task = fromString(line);
-                if (task instanceof Epic) {
+                if (task.getType() == TaskType.EPIC) {
                     manager.createEpic((Epic) task);
-                } else if (task instanceof SubTask) {
+                } else if (task.getType() == TaskType.SUBTASK) {
                     manager.createSubTask((SubTask) task);
                 } else {
                     manager.createTask(task);
                 }
             }
-
         } catch (IOException e) {
             throw new ManagerSaveException("Failed to load tasks from file", e);
         }
@@ -134,27 +117,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             default:
                 return null;
         }
-    }
-
-    @Override
-    public List<Task> getAllTasks() {
-        return super.getAllTasks();
-    }
-
-    @Override
-    public void addTaskToHistoryList(Task task) {
-        super.addTaskToHistoryList(task);
-        save();
-    }
-
-    @Override
-    public List<SubTask> getAllSubTasks() {
-        return super.getAllSubTasks();
-    }
-
-    @Override
-    public List<Epic> getAllEpics() {
-        return super.getAllEpics();
     }
 
     @Override
@@ -194,32 +156,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public List<SubTask> getAllSubtasksByEpicId(int id) {
-        return super.getAllSubTasks();
-    }
-
-    @Override
-    public Task getTaskById(int id) {
-        Task task = super.getTaskById(id);
-        save();
-        return task;
-    }
-
-    @Override
-    public SubTask getSubTaskById(int id) {
-        SubTask subTask = super.getSubTaskById(id);
-        save();
-        return subTask;
-    }
-
-    @Override
-    public Epic getEpicById(int id) {
-        Epic epic = super.getEpicById(id);
-        save();
-        return epic;
-    }
-
-    @Override
     public Task createTask(Task newTask) {
         super.createTask(newTask);
         save();
@@ -254,17 +190,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void updateEpic(Epic updateEpic) {
         super.updateEpic(updateEpic);
         save();
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        List<Task> history = super.getHistory();
-        save();
-        return history;
-    }
-
-    @Override
-    public int idGenerator() {
-        return super.idGenerator();
     }
 }
