@@ -13,7 +13,7 @@ public class ManagersTest {
 
     @Test
     void utilityClassReturnsInitializedAndReadyToUseInstancesOfInMemoryHistoryManager() {
-        InMemoryHistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+        HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         assertNotNull(inMemoryHistoryManager);
     }
 }

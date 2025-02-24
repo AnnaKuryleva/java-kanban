@@ -1,7 +1,10 @@
 package ru.practicum.kanban.model;
 
+import ru.practicum.kanban.service.TaskType;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Epic extends Task {
 
@@ -60,10 +63,19 @@ public class Epic extends Task {
     }
 
     @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
+
+    @Override
     public String toString() {
-        return " Epic {" +
-                // "subTasks=" + subTasks +
-                ", " + super.toString() +
-                '}';
+        Set<Integer> subTaskIds = subTasks.keySet();
+        return "Epic [" +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() +
+                ", taskStatus=" + getTaskStatus() +
+                ", subTaskIds=" + subTaskIds +
+                ']';
     }
 }
