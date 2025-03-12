@@ -5,6 +5,7 @@ import ru.practicum.kanban.model.SubTask;
 import ru.practicum.kanban.model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -28,11 +29,11 @@ public interface TaskManager {
 
     List<SubTask> getAllSubtasksByEpicId(int id);
 
-    Task getTaskById(int id);
+    Task getTaskById(int id);//yes
 
-    SubTask getSubTaskById(int id);
+    SubTask getSubTaskById(int id);//yes
 
-    Epic getEpicById(int id);
+    Epic getEpicById(int id);//yes
 
     Task createTask(Task newTask);
 
@@ -49,5 +50,7 @@ public interface TaskManager {
     List<Task> getHistory();
 
     int idGenerator();
+
+    Set<Task> getPrioritizedTasks();
 
 }

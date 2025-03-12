@@ -10,36 +10,40 @@ import ru.practicum.kanban.model.TaskStatus;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HistoryManagerTest {
     private TaskManager taskManager;
     private HistoryManager historyManager;
+    private Task taskOne;
+    private Task taskTwo;
+    private Task taskThree;
+    private Epic epicTestOne;
 
     @BeforeEach
     void setForEachMethod() {
         historyManager = Managers.getDefaultHistory();
         taskManager = new InMemoryTaskManager(historyManager);
+        taskOne = new Task("TaskTestOne", "Description", 1, TaskStatus.NEW);
+        taskTwo = new Task("TaskTestTwo", "Description", 2, TaskStatus.NEW);
+        taskThree = new Task("TaskTestThree", "Description", 3, TaskStatus.NEW);
+        epicTestOne = new Epic("EpicTestOne", "Description", taskManager.idGenerator());
+
     }
 
     @Test
     void tasksAddedToHistoryManagerRetainPreviousVersionOfTaskAndItsData() {
-        Task task1 = new Task("TaskTestOne", "DescriptionForTaskTestOne",
-                1, TaskStatus.NEW);
-        taskManager.createTask(task1);
-        historyManager.add(task1);
+        taskManager.createTask(taskOne);
+        historyManager.add(taskOne);
         List<Task> history = historyManager.getHistory();
-        assertEquals(task1.getName(), history.get(0).getName());
-        assertEquals(task1.getDescription(), history.get(0).getDescription());
-        assertEquals(task1.getId(), history.get(0).getId());
-        assertEquals(task1.getTaskStatus(), history.get(0).getTaskStatus());
+        assertEquals(taskOne.getName(), history.get(0).getName());
+        assertEquals(taskOne.getDescription(), history.get(0).getDescription());
+        assertEquals(taskOne.getId(), history.get(0).getId());
+        assertEquals(taskOne.getTaskStatus(), history.get(0).getTaskStatus());
     }
 
     @Test
     void tasksReceivedByIdAreIncludedInHistory() {
-        Task taskOne = new Task("TaskTestOne", "DescriptionForTaskTestOne",
-                1, TaskStatus.NEW);
-        Task taskTwo = new Task("TaskTestTwo", "DescriptionForTaskTestTwo",
-                2, TaskStatus.IN_PROGRESS);
         taskManager.createTask(taskOne);
         taskManager.createTask(taskTwo);
         Task receiveTaskOne = taskManager.getTaskById(1);
@@ -51,11 +55,8 @@ public class HistoryManagerTest {
 
     @Test
     void subtaskIdDeletedFromHistoryMapWhenThisSubtaskDeleted() {
-        Epic epicTestOne = new Epic("EpicTestOne", "ОПИСАНИЕ-ДЛЯ-ПЕРВОГО ЭПИКА",
-                taskManager.idGenerator());
         taskManager.createEpic(epicTestOne);
-        SubTask subTaskTestOne = new SubTask("SubTaskTestOne",
-                "ОПИСАНИЕ ПЕРВОГО сабТаска - ДЛЯ ПЕРВОГО ЭПИКА", taskManager.idGenerator(),
+        SubTask subTaskTestOne = new SubTask("SubTaskTestOne", "Description", taskManager.idGenerator(),
                 TaskStatus.IN_PROGRESS, epicTestOne.getId());
         taskManager.createSubTask(subTaskTestOne);
         taskManager.getEpicById(epicTestOne.getId());
@@ -68,5 +69,56 @@ public class HistoryManagerTest {
         assertEquals(List.of(), historyNew);
     }
 
+    @Test
+    void getHistoryReturnsEmptyListIfNoTasksAdded() {
+        List<Task> history = historyManager.getHistory();
+        assertTrue(history.isEmpty());
+    }
 
+    @Test
+    void duplicateTaskMovesToEndAndRemovesPrevious() {
+        historyManager.add(taskOne);
+        historyManager.add(taskTwo);
+        historyManager.add(taskOne);
+        List<Task> history = historyManager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(taskTwo, history.get(0));
+        assertEquals(taskOne, history.get(1));
+    }
+
+    @Test
+    void IfRemovedFromBeginningOfHistoryLinksUpdatedCorrectly() {
+        historyManager.add(taskOne);
+        historyManager.add(taskTwo);
+        historyManager.add(taskThree);
+        historyManager.remove(1);
+        List<Task> history = historyManager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(taskTwo, history.get(0));
+        assertEquals(taskThree, history.get(1));
+    }
+
+    @Test
+    void IfRemovedFromMiddleOfHistoryLinksUpdatedCorrectly() {
+        historyManager.add(taskOne);
+        historyManager.add(taskTwo);
+        historyManager.add(taskThree);
+        historyManager.remove(2);
+        List<Task> history = historyManager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(taskOne, history.get(0));
+        assertEquals(taskThree, history.get(1));
+    }
+
+    @Test
+    void IfRemovedFromEndOfHistoryLinksUpdatedCorrectly() {
+        historyManager.add(taskOne);
+        historyManager.add(taskTwo);
+        historyManager.add(taskThree);
+        historyManager.remove(3);
+        List<Task> history = historyManager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(taskOne, history.get(0));
+        assertEquals(taskTwo, history.get(1));
+    }
 }
