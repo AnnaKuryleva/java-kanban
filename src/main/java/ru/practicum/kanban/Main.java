@@ -41,12 +41,12 @@ public class Main {
 
         Epic epicTestOne = new Epic("EpicTestOne", "DescriptionForEpicTestOne", 4);
         Epic epicTestTwo = new Epic("EpicTestTwo", "DescriptionForEpicTestTwo", 5);
-        SubTask subTaskTestOne = new SubTask("SubTaskTestOne", "DescriptionOfTheFirstSubtaskForFirstEpic"
-                , 6, TaskStatus.IN_PROGRESS, 4, 30L, 2023, 3, 2, 21, 0);
+        SubTask subTaskTestOne = new SubTask("SubTaskTestOne", "DescriptionOfTheFirstSubtaskForFirstEpic",
+                6, TaskStatus.IN_PROGRESS, 4, 30L, 2023, 3, 2, 21, 0);
         SubTask subTaskTestTwo = new SubTask("SubTaskTestTwo", "DescriptionOfTheSecondSubtaskForFirstEpic",
                 7, TaskStatus.DONE, 4, 30L, 2023, 3, 2, 23, 0);
-        SubTask subTaskTestThree = new SubTask("SubTaskTestThree", "DescriptionOfTheThreeSubTaskForSecondEpic"
-                , 8, TaskStatus.DONE, 5, 20L, 2023, 3, 3, 15, 0);
+        SubTask subTaskTestThree = new SubTask("SubTaskTestThree", "DescriptionOfTheThreeSubTaskForSecondEpic",
+                8, TaskStatus.DONE, 5, 20L, 2023, 3, 3, 15, 0);
 
         Epic epicTestThree = new Epic("EpicTestTree", "DescriptionForEpicTestTree", 9);
 
@@ -113,7 +113,7 @@ public class Main {
         printAllTasks(taskManager);
         System.out.println(taskManager.getPrioritizedTasks());
 
-                System.out.println("ТЕСТИРОВАНИЕ CSV");
+        System.out.println("ТЕСТИРОВАНИЕ CSV");
 
         File file = new File("src/main/resources/tasks.csv");
         TaskManager manager = Managers.getFileBacked(file);
