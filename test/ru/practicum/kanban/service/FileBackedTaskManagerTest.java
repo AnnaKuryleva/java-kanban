@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.kanban.exceptions.ManagerSaveException;
+import ru.practicum.kanban.model.Epic;
+import ru.practicum.kanban.model.SubTask;
 import ru.practicum.kanban.model.Task;
 import ru.practicum.kanban.model.TaskStatus;
 
@@ -23,8 +25,17 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<TaskManager> {
     void setUp() throws IOException {
         file = Files.createTempFile("test", ".csv").toFile();
         fileBackedTaskManager = new FileBackedTaskManager(Managers.getDefaultHistory(), file);
+        taskManager = Managers.getDefault();
+        taskTestOne = new Task("TaskTestOne", "Description", taskManager.idGenerator(), TaskStatus.NEW);
+        taskTestTwo = new Task("TaskTestTwo", "DescriptionForTaskTestTwo", taskManager.idGenerator(),
+                TaskStatus.NEW);
+        epicTestOne = new Epic("EpicTestOne", "Description", taskManager.idGenerator());
+        subTaskTestOne = new SubTask("SubTaskTestOne", "Description", taskManager.idGenerator(),
+                TaskStatus.IN_PROGRESS, epicTestOne.getId());
+        subTaskTestTwo = new SubTask("SubTaskTestTwo", "Description", taskManager.idGenerator(),
+                TaskStatus.NEW, epicTestOne.getId());
+        epicTestTwo = new Epic("EpicTestTwo", "Description", taskManager.idGenerator());
     }
-
     @AfterEach
     void clean() {
         if (file != null && file.exists()) {

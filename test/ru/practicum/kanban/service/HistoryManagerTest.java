@@ -46,8 +46,8 @@ public class HistoryManagerTest {
     void tasksReceivedByIdAreIncludedInHistory() {
         taskManager.createTask(taskOne);
         taskManager.createTask(taskTwo);
-        Task receiveTaskOne = taskManager.getTaskById(1);
-        Task receiveTaskTwo = taskManager.getTaskById(2);
+        Task receiveTaskOne = taskManager.getTaskById(taskOne.getId());
+        Task receiveTaskTwo = taskManager.getTaskById(taskTwo.getId());
         List<Task> history = historyManager.getHistory();
         assertEquals(receiveTaskOne, history.get(0));
         assertEquals(receiveTaskTwo, history.get(1));
