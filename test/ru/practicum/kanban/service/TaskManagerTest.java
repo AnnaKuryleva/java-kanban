@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -307,11 +306,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task = new Task("Task", "Description", taskManager.idGenerator(), TaskStatus.NEW,
                 60L, 2023, 3, 3, 10, 0);
         taskManager.createTask(task);
-        Set<Task> tasks = taskManager.getPrioritizedTasks();
         Task taskOne = new Task("TaskOne", "Description", taskManager.idGenerator(), TaskStatus.NEW,
                 60L, 2023, 3, 3, 10, 30);
-        taskManager.createTask(taskOne);
-        Set<Task> tasksAfter = taskManager.getPrioritizedTasks();
+        assertThrows(IllegalArgumentException.class, () -> taskManager.createTask(taskOne),
+                "Ожидается исключение при попытке добавить задачу с пересечением");
+        List<Task> tasksAfter = taskManager.getPrioritizedTasks();
         List<Task> tasksList = new ArrayList<>(tasksAfter);
         assertTrue(tasksList.contains(task), "Приоритетный список содержит task");
         assertEquals(1, tasksList.size(), "В списке должна быть только одна задача");
@@ -326,7 +325,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task taskOne = new Task("TaskOne", "Description", taskManager.idGenerator(), TaskStatus.NEW,
                 60L, 2023, 3, 4, 10, 0);
         taskManager.createTask(taskOne);
-        Set<Task> tasks = taskManager.getPrioritizedTasks();
+        List<Task> tasks = taskManager.getPrioritizedTasks();
         List<Task> tasksList = new ArrayList<>(tasks);
         assertEquals(task, tasksList.get(0));
         assertEquals(taskOne, tasksList.get(1));

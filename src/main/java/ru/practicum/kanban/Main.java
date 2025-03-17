@@ -17,7 +17,7 @@ public class Main {
         System.out.println("****** 1. Creating Tasks");
         System.out.println();
         Task taskTestOne = new Task("TaskTestOne", "DescriptionForTaskTestOne", 1, TaskStatus.NEW,
-                180L);
+                120L);
         Task taskTestTwo = new Task("TaskTestTwo", "DescriptionForTaskTestTwo", 2, TaskStatus.NEW,
                 60L, 2023, 3, 2, 17, 0);
         Task taskTestFoo = new Task("TaskTestFoo", "DescriptionForTaskTestTwo", 3, TaskStatus.NEW,
@@ -30,6 +30,7 @@ public class Main {
         taskManager.createTask(taskTestOne);
         taskManager.createTask(taskTestTwo);
         taskManager.createTask(taskTestFoo);
+
 
         System.out.println("Tasks created: ");
 

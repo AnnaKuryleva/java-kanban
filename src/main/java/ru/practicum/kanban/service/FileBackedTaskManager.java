@@ -186,19 +186,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void createSubTask(SubTask newSubTask) {
-            int epicId = newSubTask.getEpicId();
-            if (epicId == newSubTask.getId()) {
-                return;
+        int epicId = newSubTask.getEpicId();
+        if (epicId == newSubTask.getId()) {
+            return;
+        }
+        Epic relatedEpic = epics.get(epicId);
+        if (relatedEpic != null) {
+            relatedEpic.addSubTask(newSubTask);
+            subTasks.put(newSubTask.getId(), newSubTask);
+            if (newSubTask.getStartTime() != null) {
+                priorityTasksList.add(newSubTask);
             }
-            Epic relatedEpic = epics.get(epicId);
-            if (relatedEpic != null) {
-                relatedEpic.addSubTask(newSubTask);
-                subTasks.put(newSubTask.getId(), newSubTask);
-                if (newSubTask.getStartTime() != null) {
-                    priorityTasksList.add(newSubTask);
-                }
-                save();
-            }
+            save();
+        }
     }
 
     @Override

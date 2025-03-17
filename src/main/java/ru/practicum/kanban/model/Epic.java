@@ -60,11 +60,10 @@ public class Epic extends Task {
                     .max(Comparator.comparing(SubTask::getEndTime))
                     .map(SubTask::getEndTime).orElse(null);
 
-            if (startTime != null && endTime != null) {
-                duration = Duration.between(startTime, endTime);
-            } else {
-                duration = Duration.ZERO;
-            }
+            duration = subTasks.values().stream()
+                    .filter(subTask -> subTask.getDuration() != null)
+                    .map(SubTask::getDuration)
+                    .reduce(Duration.ZERO, Duration::plus);
 
         } else {
             startTime = null;

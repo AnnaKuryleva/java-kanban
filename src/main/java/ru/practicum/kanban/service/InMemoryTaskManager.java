@@ -27,8 +27,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Set<Task> getPrioritizedTasks() {
-        return priorityTasksList;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(priorityTasksList);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        tasks.values().stream().forEach(task -> {
+        tasks.values().forEach(task -> {
             priorityTasksList.remove(task);
             historyManager.remove(task.getId());
         });
@@ -57,12 +57,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubTasks() {
-        subTasks.values().stream().forEach(subTask -> {
+        subTasks.values().forEach(subTask -> {
             priorityTasksList.remove(subTask);
             historyManager.remove(subTask.getId());
         });
         subTasks.clear();
-        epics.values().stream().forEach(Epic::removeSubTasks);
+        epics.values().forEach(Epic::removeSubTasks);
     }
 
     @Override
@@ -144,11 +144,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task createTask(Task newTask) {
+        if (newTask.getStartTime() == null) {
+            newTask.setId(idGenerator());
+            tasks.put(newTask.getId(), newTask);
+            return newTask;
+        }
+        if (findIntersectionTasks(newTask)) {
+            throw new IllegalArgumentException("Задача пересекается с другой задачей по времени выполнения");
+        }
         newTask.setId(idGenerator());
         tasks.put(newTask.getId(), newTask);
-        if (newTask.getStartTime() != null && !findIntersectionTasks(newTask)) {
-            priorityTasksList.add(newTask);
-        }
+        priorityTasksList.add(newTask);
         return newTask;
     }
 
@@ -159,14 +165,22 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Epic relatedEpic = epics.get(epicId);
-        if (relatedEpic != null) {
+        if (relatedEpic == null) {
+            return;
+        }
+        if (newSubTask.getStartTime() == null) {
             relatedEpic.addSubTask(newSubTask);
             newSubTask.setId(idGenerator());
             subTasks.put(newSubTask.getId(), newSubTask);
-            if (newSubTask.getStartTime() != null && !findIntersectionTasks(newSubTask)) {
-                priorityTasksList.add(newSubTask);
-            }
+            return;
         }
+        if (findIntersectionTasks(newSubTask)) {
+            throw new IllegalArgumentException("Подзадача пересекается с другой задачей по времени выполнения");
+        }
+        relatedEpic.addSubTask(newSubTask);
+        newSubTask.setId(idGenerator());
+        subTasks.put(newSubTask.getId(), newSubTask);
+        priorityTasksList.add(newSubTask);
     }
 
     @Override
@@ -183,10 +197,16 @@ public class InMemoryTaskManager implements TaskManager {
         }
         Task oldTask = tasks.get(idTask);
         priorityTasksList.remove(oldTask);
-        tasks.replace(idTask, updateTask);
-        if (updateTask.getStartTime() != null) {
-            priorityTasksList.add(updateTask);
+        if (updateTask.getStartTime() == null) {
+            tasks.replace(idTask, updateTask);
+            return;
         }
+        if (findIntersectionTasks(updateTask)) {
+            priorityTasksList.add(oldTask);
+            throw new IllegalArgumentException("Задача пересекается с другой задачей по времени выполнения.");
+        }
+        tasks.replace(idTask, updateTask);
+        priorityTasksList.add(updateTask);
     }
 
     @Override
@@ -198,15 +218,22 @@ public class InMemoryTaskManager implements TaskManager {
         SubTask oldSubTask = subTasks.get(subTaskId);
         int epicId = myUpdateSubTask.getEpicId();
         Epic relatedEpic = epics.get(epicId);
-        if (relatedEpic != null && oldSubTask.getEpicId() == epicId) {
-            priorityTasksList.remove(oldSubTask);
-            relatedEpic.addSubTask(myUpdateSubTask);
-            subTasks.put(myUpdateSubTask.getId(), myUpdateSubTask);
-            if (myUpdateSubTask.getStartTime() != null) {
-                priorityTasksList.add(myUpdateSubTask);
-
-            }
+        if (relatedEpic == null || oldSubTask.getEpicId() != epicId) {
+            return;
         }
+        priorityTasksList.remove(oldSubTask);
+        if (myUpdateSubTask.getStartTime() == null) {
+            relatedEpic.addSubTask(myUpdateSubTask);
+            subTasks.replace(myUpdateSubTask.getId(), myUpdateSubTask);
+            return;
+        }
+        if (findIntersectionTasks(myUpdateSubTask)) {
+            priorityTasksList.add(oldSubTask);
+            throw new IllegalArgumentException("Подзадача пересекается с другой задачей по времени выполнения.");
+        }
+        relatedEpic.addSubTask(myUpdateSubTask);
+        subTasks.replace(myUpdateSubTask.getId(), myUpdateSubTask);
+        priorityTasksList.add(myUpdateSubTask);
     }
 
     @Override

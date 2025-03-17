@@ -5,7 +5,6 @@ import ru.practicum.kanban.model.SubTask;
 import ru.practicum.kanban.model.Task;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
 
@@ -51,6 +50,6 @@ public interface TaskManager {
 
     int idGenerator();
 
-    Set<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks();
 
 }
