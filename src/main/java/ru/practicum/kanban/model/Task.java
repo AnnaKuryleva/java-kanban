@@ -2,17 +2,40 @@ package ru.practicum.kanban.model;
 
 import ru.practicum.kanban.service.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     private String name;
     private String description;
     private int id;
     private TaskStatus taskStatus;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     public Task(String name, String description, int id, TaskStatus taskStatus) {
         this.name = name;
         this.description = description;
         this.id = id;
         this.taskStatus = taskStatus;
+    }
+
+    public Task(String name, String description, int id, TaskStatus taskStatus, Long duration, int year, int month,
+                int day, int hour, int minutes) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.taskStatus = taskStatus;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = LocalDateTime.of(year, month, day, hour, minutes);
+    }
+
+    public Task(String name, String description, int id, TaskStatus taskStatus, Long duration) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.taskStatus = taskStatus;
+        this.duration = Duration.ofMinutes(duration);
     }
 
     public String getName() {
@@ -51,13 +74,30 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime != null && duration != null) {
+            return startTime.plus(duration);
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
-        return " Task [" +
+        return "Task [" +
                 "name= '" + name + '\'' +
                 ", description= '" + description + '\'' +
                 ", id= " + id +
                 ", taskStatus= " + taskStatus +
+                ", duration= " + (duration != null ? duration.toMinutes() + " минут" : 0) +
+                ", startTime= " + (startTime != null ? startTime : 0) +
                 ']';
     }
 

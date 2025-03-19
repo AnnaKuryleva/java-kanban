@@ -28,11 +28,11 @@ public interface TaskManager {
 
     List<SubTask> getAllSubtasksByEpicId(int id);
 
-    Task getTaskById(int id);
+    Task getTaskById(int id);//yes
 
-    SubTask getSubTaskById(int id);
+    SubTask getSubTaskById(int id);//yes
 
-    Epic getEpicById(int id);
+    Epic getEpicById(int id);//yes
 
     Task createTask(Task newTask);
 
@@ -49,5 +49,7 @@ public interface TaskManager {
     List<Task> getHistory();
 
     int idGenerator();
+
+    List<Task> getPrioritizedTasks();
 
 }
