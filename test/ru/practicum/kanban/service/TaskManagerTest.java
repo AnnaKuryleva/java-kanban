@@ -144,7 +144,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void endTimeOfTaskEqualToItsStartTimePlusItsDuration() {
         Task task = new Task("TaskTestOne", "Description", taskManager.idGenerator(), TaskStatus.NEW,
-                30L, 2025, 3, 3, 10, 0);
+                30L, LocalDateTime.of(2025, 3, 3, 10, 0));
         LocalDateTime expectedEndTime
                 = LocalDateTime.of(2025, 3, 3, 10,
                 30);
@@ -304,10 +304,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void ifNewTaskOverlapsInTimeWithThoseAlreadyInPriorityListItIsNotAddedToIt() {
         Task task = new Task("Task", "Description", taskManager.idGenerator(), TaskStatus.NEW,
-                60L, 2023, 3, 3, 10, 0);
+                60L, LocalDateTime.of(2023, 3, 3, 10, 0));
         taskManager.createTask(task);
         Task taskOne = new Task("TaskOne", "Description", taskManager.idGenerator(), TaskStatus.NEW,
-                60L, 2023, 3, 3, 10, 30);
+                60L, LocalDateTime.of(2023, 3, 3, 10, 30));
         assertThrows(IllegalArgumentException.class, () -> taskManager.createTask(taskOne),
                 "Ожидается исключение при попытке добавить задачу с пересечением");
         List<Task> tasksAfter = taskManager.getPrioritizedTasks();
@@ -320,10 +320,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void inPriorityListTasksArrangedFromEarlierToLaterImplementationDates() {
         Task task = new Task("Task", "Description", taskManager.idGenerator(), TaskStatus.NEW,
-                60L, 2023, 3, 3, 10, 0);
+                60L, LocalDateTime.of(2023, 3, 3, 10, 0));
         taskManager.createTask(task);
         Task taskOne = new Task("TaskOne", "Description", taskManager.idGenerator(), TaskStatus.NEW,
-                60L, 2023, 3, 4, 10, 0);
+                60L, LocalDateTime.of(2023, 3, 4, 10, 0));
         taskManager.createTask(taskOne);
         List<Task> tasks = taskManager.getPrioritizedTasks();
         List<Task> tasksList = new ArrayList<>(tasks);

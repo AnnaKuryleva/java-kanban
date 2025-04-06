@@ -20,14 +20,13 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-    public Task(String name, String description, int id, TaskStatus taskStatus, Long duration, int year, int month,
-                int day, int hour, int minutes) {
+    public Task(String name, String description, int id, TaskStatus taskStatus, Long duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.id = id;
         this.taskStatus = taskStatus;
         this.duration = Duration.ofMinutes(duration);
-        this.startTime = LocalDateTime.of(year, month, day, hour, minutes);
+        this.startTime = startTime;
     }
 
     public Task(String name, String description, int id, TaskStatus taskStatus, Long duration) {

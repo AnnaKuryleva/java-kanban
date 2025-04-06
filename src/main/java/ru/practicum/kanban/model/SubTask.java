@@ -2,6 +2,8 @@ package ru.practicum.kanban.model;
 
 import ru.practicum.kanban.service.TaskType;
 
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     private final int epicId;
 
@@ -11,8 +13,8 @@ public class SubTask extends Task {
     }
 
     public SubTask(String name, String description, int id, TaskStatus taskStatus, int epicId, Long duration,
-                   int year, int month, int day, int hour, int minutes) {
-        super(name, description, id, taskStatus, duration, year, month, day, hour, minutes);
+                   LocalDateTime startTime) {
+        super(name, description, id, taskStatus, duration, startTime);
         this.epicId = epicId;
     }
 
