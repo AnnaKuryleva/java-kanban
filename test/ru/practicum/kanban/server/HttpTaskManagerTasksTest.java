@@ -29,7 +29,7 @@ public class HttpTaskManagerTasksTest {
     public HttpTaskManagerTasksTest() throws IOException {
         taskManager = Managers.getDefault();
         taskServer = new HttpTaskServer(taskManager);
-        gson = HttpTaskServer.getGson();
+        gson = BaseHttpHandler.getGson();
         client = HttpClient.newHttpClient();
     }
 
