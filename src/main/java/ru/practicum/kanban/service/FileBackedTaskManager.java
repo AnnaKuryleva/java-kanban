@@ -9,9 +9,12 @@ import ru.practicum.kanban.model.TaskStatus;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
@@ -108,17 +111,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int epicId = taskType == TaskType.SUBTASK ? Integer.parseInt(restoreTask[5]) : -1;
         Long duration = Long.parseLong(restoreTask[6]);
         if (restoreTask.length > 7) {
-            String[] dateTimeParts = restoreTask[7].split("[-T:]");
-            int year = Integer.parseInt(dateTimeParts[0]);
-            int month = Integer.parseInt(dateTimeParts[1]);
-            int day = Integer.parseInt(dateTimeParts[2]);
-            int hour = Integer.parseInt(dateTimeParts[3]);
-            int minutes = Integer.parseInt(dateTimeParts[4]);
+            LocalDateTime startTime = LocalDateTime.parse(restoreTask[7], FORMATTER);
             switch (taskType) {
                 case TASK:
-                    return new Task(name, description, id, taskStatus, duration, year, month, day, hour, minutes);
+                    return new Task(name, description, id, taskStatus, duration, startTime);
                 case SUBTASK:
-                    return new SubTask(name, description, id, taskStatus, epicId, duration, year, month, day, hour, minutes);
+                    return new SubTask(name, description, id, taskStatus, epicId, duration, startTime);
                 case EPIC:
                     return new Epic(name, description, id);
                 default:

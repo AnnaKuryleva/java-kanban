@@ -7,6 +7,7 @@ import ru.practicum.kanban.service.*;
 import ru.practicum.kanban.model.TaskStatus;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Main {
@@ -19,9 +20,9 @@ public class Main {
         Task taskTestOne = new Task("TaskTestOne", "DescriptionForTaskTestOne", 1, TaskStatus.NEW,
                 120L);
         Task taskTestTwo = new Task("TaskTestTwo", "DescriptionForTaskTestTwo", 2, TaskStatus.NEW,
-                60L, 2023, 3, 2, 17, 0);
+                60L, LocalDateTime.of(2023, 3, 2, 20, 0));
         Task taskTestFoo = new Task("TaskTestFoo", "DescriptionForTaskTestTwo", 3, TaskStatus.NEW,
-                30L, 2023, 3, 2, 20, 0);
+                30L, LocalDateTime.of(2023, 3, 2, 20, 0));
 
 
         System.out.println("****** 1.1 Adding Tasks to the manager");
@@ -43,11 +44,14 @@ public class Main {
         Epic epicTestOne = new Epic("EpicTestOne", "DescriptionForEpicTestOne", 4);
         Epic epicTestTwo = new Epic("EpicTestTwo", "DescriptionForEpicTestTwo", 5);
         SubTask subTaskTestOne = new SubTask("SubTaskTestOne", "DescriptionOfTheFirstSubtaskForFirstEpic",
-                6, TaskStatus.IN_PROGRESS, 4, 30L, 2023, 3, 2, 21, 0);
+                6, TaskStatus.IN_PROGRESS, 4, 30L,
+                LocalDateTime.of(2023, 3, 2, 21, 0));
         SubTask subTaskTestTwo = new SubTask("SubTaskTestTwo", "DescriptionOfTheSecondSubtaskForFirstEpic",
-                7, TaskStatus.DONE, 4, 30L, 2023, 3, 2, 23, 0);
+                7, TaskStatus.DONE, 4, 30L,
+                LocalDateTime.of(2023, 3, 2, 23, 0));
         SubTask subTaskTestThree = new SubTask("SubTaskTestThree", "DescriptionOfTheThreeSubTaskForSecondEpic",
-                8, TaskStatus.DONE, 5, 20L, 2023, 3, 3, 15, 0);
+                8, TaskStatus.DONE, 5, 20L,
+                LocalDateTime.of(2023, 3, 3, 15, 0));
 
         Epic epicTestThree = new Epic("EpicTestTree", "DescriptionForEpicTestTree", 9);
 
@@ -59,8 +63,8 @@ public class Main {
         taskManager.createSubTask(subTaskTestTwo);
 
         taskManager.updateSubTask(new SubTask("SubTaskTestFoo - update SubTaskTestOne", "Description - " +
-                "updateForTheFirstSubtask", 6, TaskStatus.IN_PROGRESS, 4, 60L, 2023, 3,
-                2, 21, 0));
+                "updateForTheFirstSubtask", 6, TaskStatus.IN_PROGRESS, 4, 60L,
+                LocalDateTime.of(2023, 3, 2, 21, 0)));
 
         taskManager.createSubTask(subTaskTestThree);
         taskManager.createEpic(epicTestThree);
